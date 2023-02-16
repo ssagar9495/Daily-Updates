@@ -1,0 +1,58 @@
+//////PLEASE INSTALL THE AXIOS TO GET HELP FROM THE AXIOS///////
+
+import "./App.css";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+const baseUrl = "https://jsonplaceholder.typicode.com";
+
+const endPoints = {
+  TODO: "/todos",
+  POST: "/posts",
+  COMMENTS: "/comments",
+};
+
+function App() {
+  const [dataList, setDataList] = useState([]);
+  const [error, setError] = useState();
+
+  /*GET DATA USING AXIOS LIGHT WEIGHT PACKAGE WITH PROMISE OLD TECHNIQUE */
+
+  useEffect(() => {
+    axios
+      .get("https://jsonplaceholder.typicode.com/todos")
+      .then((res) => setDataList(res?.data))
+      .catch((err) => setError(err?.message));
+  }, []);
+
+  /*GET DATA USING ASYN AWAIT */
+  /*PLACE IT INTO THE ANOTHER JSX FILE TO MAKE IS COMMON */
+
+  const getApi = async (endPoint) => {
+    try {
+      const response = await axios.get(`${baseUrl}${endPoint}`);
+      setDataList(response?.data);
+    } catch (err) {
+      setError(err?.message);
+    }
+  };
+
+  /////USE EFFECT TO RUN IT FIRST TIME///////
+
+  useEffect(() => {
+    getApi(endPoints.TODO);
+  }, []);
+
+  return (
+    <div className="App">
+      {error && <div className="errorBlock">{error}</div>}
+      {dataList?.slice(0, 12).map((data, index, arr) => {
+        return (
+          <div className="blocksContainer">{data?.title.toUpperCase()}</div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default App;
